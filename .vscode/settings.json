@@ -1,0 +1,15 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "python.formatting.blackArgs": ["--config", "backend/pyproject.toml"],
+    "python.linting.flake8Args": ["--toml-config", "backend/pyproject.toml"],
+    "python.linting.mypyArgs": [
+        "--follow-imports=silent",
+        "--ignore-missing-imports",
+        "--show-column-numbers",
+        "--no-pretty",
+        "--config-file=backend/pyproject.toml"
+    ],
+}

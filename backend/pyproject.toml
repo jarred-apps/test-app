@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "insta-auto-post"
+version = "0.1.0"
+description = ""
+authors = ["jdglaser <jarred.glaser@gmail.com>"]
+readme = "README.md"
+
+[tool.mypy]
+disallow_untyped_defs = true
+
+[tool.black]
+line-length = 120
+
+[tool.flake8]
+max-line-length = 120
+
