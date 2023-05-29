@@ -22,7 +22,7 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: Configure Docker
-        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Checkout repository
         uses: actions/checkout@v2
