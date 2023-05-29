@@ -21,9 +21,6 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: Configure Docker
-        run: gcloud auth configure-docker us-central1-docker.pkg.dev
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -31,7 +28,9 @@ jobs:
         run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
 
       - name: Push Docker image
-        run: docker push $IMAGE_NAME:$GITHUB_SHA
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Deploy Docker image
         run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1
