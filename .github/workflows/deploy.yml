@@ -16,6 +16,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
+          token_format: 'access_token'
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
           service_account: test-app-service-account@jarred-apps.iam.gserviceaccount.com
 
@@ -27,6 +28,13 @@ jobs:
 
       - name: Build Docker image
         run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
+
+      - name: Login to GAR
+        uses: docker/login-action@v2
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
       - name: Push Docker image
         run: |
