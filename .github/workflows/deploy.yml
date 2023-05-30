@@ -10,9 +10,15 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     env:
       IMAGE_NAME: us-central1-docker.pkg.dev/jarred-apps/jarred-apps-docker-repo/test-app
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
@@ -22,9 +28,6 @@ jobs:
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
       - name: Build Docker image
         run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
