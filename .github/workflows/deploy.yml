@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
@@ -43,4 +43,4 @@ jobs:
         run: docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Deploy Docker image
-        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1
+        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1 --service-account test-app-service-account@jarred-apps.iam.gserviceaccount.com
