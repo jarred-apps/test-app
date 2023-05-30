@@ -16,7 +16,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          token: 'access_token'
+          token_format: 'access_token'
           workload_identity_provider: projects/437002318791/locations/global/workloadIdentityPools/github-identity-pool/providers/github-identity-provider
           service_account: test-app-service-account@jarred-apps.iam.gserviceaccount.com
 
