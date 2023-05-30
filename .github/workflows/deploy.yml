@@ -16,8 +16,8 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          token_format: 'access_token'
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          token: 'access_token'
+          provider_name: projects/437002318791/locations/global/workloadIdentityPools/github-identity-pool/providers/github-identity-provider
           service_account: test-app-service-account@jarred-apps.iam.gserviceaccount.com
 
       - name: 'Set up Cloud SDK'
@@ -29,7 +29,7 @@ jobs:
       - name: Build Docker image
         run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
 
-      - name: Login to GAR
+      - name: Login to Artifact Registry
         uses: docker/login-action@v2
         with:
           registry: us-central1-docker.pkg.dev
@@ -37,9 +37,7 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
 
       - name: Push Docker image
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-          docker push $IMAGE_NAME:$GITHUB_SHA
+        run: docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Deploy Docker image
         run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1
