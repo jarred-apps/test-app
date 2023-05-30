@@ -31,20 +31,20 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: 'test gcloud'
-        run: gcloud auth list
-        
-      - name: Build Docker image
-        run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
+        run: gcloud run deploy --image us-central1-docker.pkg.dev/jarred-apps/jarred-apps-docker-repo/test-app:ff32d24e10b871e7af500b502ae88b562e8eabfc --region us-central1 --service-account test-app-service-account@jarred-apps.iam.gserviceaccount.com
 
-      - name: Login to Artifact Registry
-        uses: docker/login-action@v2
-        with:
-          registry: us-central1-docker.pkg.dev
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+      # - name: Build Docker image
+      #   run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
 
-      - name: Push Docker image
-        run: docker push $IMAGE_NAME:$GITHUB_SHA
+      # - name: Login to Artifact Registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: us-central1-docker.pkg.dev
+      #     username: oauth2accesstoken
+      #     password: ${{ steps.auth.outputs.access_token }}
 
-      - name: Deploy Docker image
-        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1 --service-account test-app-service-account@jarred-apps.iam.gserviceaccount.com
+      # - name: Push Docker image
+      #   run: docker push $IMAGE_NAME:$GITHUB_SHA
+
+      # - name: Deploy Docker image
+      #   run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME:$GITHUB_SHA --region us-central1 --service-account test-app-service-account@jarred-apps.iam.gserviceaccount.com
