@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Setup Gcloud Account
+    name: Deploy
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: us-central1-docker.pkg.dev/jarred-apps/jarred-apps-docker-repo/test-app
