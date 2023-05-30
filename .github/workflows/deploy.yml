@@ -26,9 +26,13 @@ jobs:
           workload_identity_provider: projects/437002318791/locations/global/workloadIdentityPools/github-identity-pool/providers/github-identity-provider
           service_account: test-app-service-account@jarred-apps.iam.gserviceaccount.com
 
+      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
+      - name: 'test gcloud'
+        run: gcloud auth list
+        
       - name: Build Docker image
         run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
 
