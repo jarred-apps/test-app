@@ -1,4 +1,4 @@
-name: deploy
+name: main
 
 on:
   push:
@@ -14,20 +14,20 @@ jobs:
       contents: 'read'
       id-token: 'write'
     env:
-      IMAGE_NAME: us-central1-docker.pkg.dev/jarred-apps/jarred-apps-docker-repo/test-app
+      IMAGE_NAME: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_ARTIFACT_REGISTRY_REPOSITORY_ID }}/test-app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - id: 'auth'
+      - name: Authenticate Cloud SDK
+        id: auth
         uses: 'google-github-actions/auth@v1'
         with:
           token_format: 'access_token'
-          workload_identity_provider: projects/437002318791/locations/global/workloadIdentityPools/github-identity-pool/providers/github-identity-provider
-          service_account: test-app-service-account@jarred-apps.iam.gserviceaccount.com
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
-      - name: 'Set up Cloud SDK'
+      - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: Build Docker image
@@ -36,7 +36,7 @@ jobs:
       - name: Login to Artifact Registry
         uses: docker/login-action@v2
         with:
-          registry: us-central1-docker.pkg.dev
+          registry: ${{ secrets.GCP_REGION }}-docker.pkg.dev
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 
@@ -44,4 +44,8 @@ jobs:
         run: docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Deploy Docker image
-        run: gcloud run deploy test-app --image $IMAGE_NAME:$GITHUB_SHA --region us-central1 --service-account test-app-service-account@jarred-apps.iam.gserviceaccount.com
+        run: |
+          gcloud run deploy test-app \
+            --image $IMAGE_NAME:$GITHUB_SHA \
+            --region ${{ secrets.GCP_REGION }} \
+            --service-account ${{ secrets.GCP_SERVICE_ACCOUNT }}
