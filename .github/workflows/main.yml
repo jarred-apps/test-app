@@ -27,25 +27,25 @@ jobs:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
 
-      # - name: Set up Cloud SDK
-      #   uses: 'google-github-actions/setup-gcloud@v1'
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v1'
 
-      # - name: Build Docker image
-      #   run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
+      - name: Build Docker image
+        run: docker build . -t $IMAGE_NAME:$GITHUB_SHA
 
-      # - name: Login to Artifact Registry
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ${{ secrets.GCP_REGION }}-docker.pkg.dev
-      #     username: oauth2accesstoken
-      #     password: ${{ steps.auth.outputs.access_token }}
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
-      # - name: Push Docker image
-      #   run: docker push $IMAGE_NAME:$GITHUB_SHA
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Deploy Docker image
         run: |
           gcloud run deploy test-app \
-            --image $IMAGE_NAME:c63a7dfeada7141a9846930afea4b836b937a2a4 \
+            --image $IMAGE_NAME:$GITHUB_SHA \
             --region ${{ secrets.GCP_REGION }} \
-            --service-account cloud-run-test-app@jarred-apps.iam.gserviceaccount.com
+            --service-account ${{ secrets.GCP_CLOUD_RUN_SERVICE_ACCOUNT }}
